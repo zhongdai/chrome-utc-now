@@ -24,6 +24,23 @@
       <div id="tz-time" class="time-value"></div>
       <div id="tz-offset" class="offset-value"></div>
     </section>
+
+    <section class="time-block">
+      <label>EPOCH CONVERTER</label>
+      <input id="epoch-input" type="text" placeholder="Enter unix timestamp..." />
+      <div id="convert-results" class="convert-results" style="display:none">
+        <div class="convert-row">
+          <span class="convert-label">UTC</span>
+          <span id="convert-utc" class="convert-value" title="Click to copy"></span>
+          <span class="copy-feedback" data-for="convert-utc">Copied!</span>
+        </div>
+        <div class="convert-row">
+          <span class="convert-label">Local</span>
+          <span id="convert-local" class="convert-value" title="Click to copy"></span>
+          <span class="copy-feedback" data-for="convert-local">Copied!</span>
+        </div>
+      </div>
+    </section>
   </div>
   <script src="popup.js"></script>
 </body>

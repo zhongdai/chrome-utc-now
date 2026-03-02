@@ -30,17 +30,46 @@ function populateTimezoneSelect(select: HTMLSelectElement): void {
   select.value = currentTimezone;
 }
 
-async function handleEpochClick(): Promise<void> {
-  const epochEl = document.getElementById('unix-epoch');
-  const feedbackEl = document.getElementById('copy-feedback');
-  if (!epochEl?.textContent) return;
-
-  await navigator.clipboard.writeText(epochEl.textContent);
-
+async function copyAndFeedback(el: HTMLElement, feedbackEl: HTMLElement | null): Promise<void> {
+  if (!el.textContent) return;
+  await navigator.clipboard.writeText(el.textContent);
   if (feedbackEl) {
     feedbackEl.classList.add('visible');
     setTimeout(() => feedbackEl.classList.remove('visible'), 1500);
   }
+}
+
+async function handleEpochClick(): Promise<void> {
+  const epochEl = document.getElementById('unix-epoch');
+  const feedbackEl = document.getElementById('copy-feedback');
+  if (!epochEl) return;
+  await copyAndFeedback(epochEl, feedbackEl);
+}
+
+function handleEpochInput(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const resultsEl = document.getElementById('convert-results');
+  const utcEl = document.getElementById('convert-utc');
+  const localEl = document.getElementById('convert-local');
+
+  if (!resultsEl || !utcEl || !localEl) return;
+
+  const raw = input.value.trim();
+  if (!raw) {
+    resultsEl.style.display = 'none';
+    return;
+  }
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 0 || parsed > 99999999999) {
+    resultsEl.style.display = 'none';
+    return;
+  }
+
+  const date = new Date(parsed * 1000);
+  utcEl.textContent = formatUtcTime(date);
+  localEl.textContent = formatLocalTime(date);
+  resultsEl.style.display = 'block';
 }
 
 function handleTimezoneChange(event: Event): void {
@@ -71,6 +100,18 @@ function init(): void {
       updateDisplay();
     });
   }
+
+  const epochInput = document.getElementById('epoch-input');
+  if (epochInput) {
+    epochInput.addEventListener('input', handleEpochInput);
+  }
+
+  document.querySelectorAll('.convert-value').forEach((el) => {
+    el.addEventListener('click', () => {
+      const feedback = el.nextElementSibling as HTMLElement | null;
+      copyAndFeedback(el as HTMLElement, feedback);
+    });
+  });
 
   updateDisplay();
   setInterval(updateDisplay, 1000);
