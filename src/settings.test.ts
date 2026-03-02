@@ -1,28 +1,18 @@
 import { getTimezone, setTimezone, TIMEZONE_OPTIONS, DEFAULT_TIMEZONE } from './settings';
 
-// Mock chrome.storage.local
-const mockStorage: Record<string, unknown> = {};
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(global as any).chrome = {
-  storage: {
-    local: {
-      get: jest.fn((keys: string[], cb: (result: Record<string, unknown>) => void) => {
-        const result: Record<string, unknown> = {};
-        for (const key of keys) {
-          if (key in mockStorage) result[key] = mockStorage[key];
-        }
-        cb(result);
-      }),
-      set: jest.fn((items: Record<string, unknown>, cb?: () => void) => {
-        Object.assign(mockStorage, items);
-        cb?.();
-      }),
-    },
-  },
+// Mock localStorage
+const mockStorage: Record<string, string> = {};
+const localStorageMock = {
+  getItem: jest.fn((key: string) => mockStorage[key] ?? null),
+  setItem: jest.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
 };
+Object.defineProperty(global, 'localStorage', { value: localStorageMock });
 
 beforeEach(() => {
   Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
+  jest.clearAllMocks();
 });
 
 describe('DEFAULT_TIMEZONE', () => {
@@ -41,21 +31,21 @@ describe('TIMEZONE_OPTIONS', () => {
 });
 
 describe('getTimezone', () => {
-  it('returns default when nothing stored', async () => {
-    const tz = await getTimezone();
+  it('returns default when nothing stored', () => {
+    const tz = getTimezone();
     expect(tz).toBe('Australia/Sydney');
   });
 
-  it('returns stored timezone', async () => {
+  it('returns stored timezone', () => {
     mockStorage['timezone'] = 'America/New_York';
-    const tz = await getTimezone();
+    const tz = getTimezone();
     expect(tz).toBe('America/New_York');
   });
 });
 
 describe('setTimezone', () => {
-  it('stores timezone', async () => {
-    await setTimezone('Europe/London');
+  it('stores timezone', () => {
+    setTimezone('Europe/London');
     expect(mockStorage['timezone']).toBe('Europe/London');
   });
 });

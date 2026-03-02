@@ -21,16 +21,10 @@ export const TIMEZONE_OPTIONS: readonly string[] = [
   'US/Hawaii',
 ] as const;
 
-export function getTimezone(): Promise<string> {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['timezone'], (result) => {
-      resolve((result['timezone'] as string) ?? DEFAULT_TIMEZONE);
-    });
-  });
+export function getTimezone(): string {
+  return localStorage.getItem('timezone') ?? DEFAULT_TIMEZONE;
 }
 
-export function setTimezone(timezone: string): Promise<void> {
-  return new Promise((resolve) => {
-    chrome.storage.local.set({ timezone }, () => resolve());
-  });
+export function setTimezone(timezone: string): void {
+  localStorage.setItem('timezone', timezone);
 }

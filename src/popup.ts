@@ -40,15 +40,15 @@ async function handleEpochClick(): Promise<void> {
   }
 }
 
-async function handleTimezoneChange(event: Event): Promise<void> {
+function handleTimezoneChange(event: Event): void {
   const select = event.target as HTMLSelectElement;
   currentTimezone = select.value;
-  await setTimezone(currentTimezone);
+  setTimezone(currentTimezone);
   updateDisplay();
 }
 
-async function init(): Promise<void> {
-  currentTimezone = await getTimezone();
+function init(): void {
+  currentTimezone = getTimezone();
 
   const select = document.getElementById('tz-select') as HTMLSelectElement | null;
   if (select) {
