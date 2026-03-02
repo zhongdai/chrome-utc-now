@@ -1,8 +1,28 @@
-import { formatUtcTime, formatLocalTime, formatUnixEpoch, formatTimezone, getTimezoneOffset } from './time';
-import { getTimezone, setTimezone, TIMEZONE_OPTIONS } from './settings';
+import {
+  formatUtcTime,
+  formatLocalTime,
+  formatUnixEpoch,
+  formatTimezone,
+  getTimezoneOffset,
+  FormatOptions,
+} from './time';
+import {
+  getTimezone,
+  setTimezone,
+  getTheme,
+  setTheme,
+  getHour12,
+  setHour12,
+  getDateFormat,
+  setDateFormat,
+  TIMEZONE_OPTIONS,
+  Theme,
+  DateFormat,
+} from './settings';
 
 let currentTimezone = 'Australia/Sydney';
 let showUtc = true;
+let formatOptions: FormatOptions = { hour12: false, dateFormat: 'YYYY-MM-DD' };
 
 function updateDisplay(): void {
   const now = new Date();
@@ -13,10 +33,13 @@ function updateDisplay(): void {
   const tzTimeEl = document.getElementById('tz-time');
   const tzOffsetEl = document.getElementById('tz-offset');
 
-  if (utcEl) utcEl.textContent = showUtc ? formatUtcTime(now) : formatLocalTime(now);
+  if (utcEl)
+    utcEl.textContent = showUtc
+      ? formatUtcTime(now, formatOptions)
+      : formatLocalTime(now, formatOptions);
   if (utcLabel) utcLabel.textContent = showUtc ? 'UTC' : 'LOCAL';
   if (epochEl) epochEl.textContent = formatUnixEpoch(now);
-  if (tzTimeEl) tzTimeEl.textContent = formatTimezone(now, currentTimezone);
+  if (tzTimeEl) tzTimeEl.textContent = formatTimezone(now, currentTimezone, formatOptions);
   if (tzOffsetEl) tzOffsetEl.textContent = `UTC${getTimezoneOffset(now, currentTimezone)}`;
 }
 
@@ -67,8 +90,8 @@ function handleEpochInput(event: Event): void {
   }
 
   const date = new Date(parsed * 1000);
-  utcEl.textContent = formatUtcTime(date);
-  localEl.textContent = formatLocalTime(date);
+  utcEl.textContent = formatUtcTime(date, formatOptions);
+  localEl.textContent = formatLocalTime(date, formatOptions);
   resultsEl.style.display = 'block';
 }
 
@@ -79,20 +102,34 @@ function handleTimezoneChange(event: Event): void {
   updateDisplay();
 }
 
+function applyTheme(theme: Theme): void {
+  document.body.classList.toggle('light', theme === 'light');
+}
+
 function init(): void {
   currentTimezone = getTimezone();
 
+  // Load settings
+  const theme = getTheme();
+  const hour12 = getHour12();
+  const dateFormat = getDateFormat();
+  formatOptions = { hour12, dateFormat };
+  applyTheme(theme);
+
+  // Timezone select
   const select = document.getElementById('tz-select') as HTMLSelectElement | null;
   if (select) {
     populateTimezoneSelect(select);
     select.addEventListener('change', handleTimezoneChange);
   }
 
+  // Epoch click-to-copy
   const epochEl = document.getElementById('unix-epoch');
   if (epochEl) {
     epochEl.addEventListener('click', handleEpochClick);
   }
 
+  // UTC/Local toggle
   const utcEl = document.getElementById('utc-time');
   if (utcEl) {
     utcEl.addEventListener('click', () => {
@@ -101,17 +138,63 @@ function init(): void {
     });
   }
 
+  // Epoch converter input
   const epochInput = document.getElementById('epoch-input');
   if (epochInput) {
     epochInput.addEventListener('input', handleEpochInput);
   }
 
+  // Convert value click-to-copy
   document.querySelectorAll('.convert-value').forEach((el) => {
     el.addEventListener('click', () => {
       const feedback = el.nextElementSibling as HTMLElement | null;
       copyAndFeedback(el as HTMLElement, feedback);
     });
   });
+
+  // Settings panel toggle
+  const settingsToggle = document.getElementById('settings-toggle');
+  const settingsPanel = document.getElementById('settings-panel');
+  if (settingsToggle && settingsPanel) {
+    settingsToggle.addEventListener('click', () => {
+      settingsPanel.style.display = settingsPanel.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  // Theme select
+  const themeSelect = document.getElementById('theme-select') as HTMLSelectElement | null;
+  if (themeSelect) {
+    themeSelect.value = theme;
+    themeSelect.addEventListener('change', () => {
+      const newTheme = themeSelect.value as Theme;
+      setTheme(newTheme);
+      applyTheme(newTheme);
+    });
+  }
+
+  // Hour format select
+  const hourSelect = document.getElementById('hour-select') as HTMLSelectElement | null;
+  if (hourSelect) {
+    hourSelect.value = hour12 ? '12h' : '24h';
+    hourSelect.addEventListener('change', () => {
+      const newHour12 = hourSelect.value === '12h';
+      setHour12(newHour12);
+      formatOptions = { ...formatOptions, hour12: newHour12 };
+      updateDisplay();
+    });
+  }
+
+  // Date format select
+  const dateFormatSelect = document.getElementById('date-format-select') as HTMLSelectElement | null;
+  if (dateFormatSelect) {
+    dateFormatSelect.value = dateFormat;
+    dateFormatSelect.addEventListener('change', () => {
+      const newDateFormat = dateFormatSelect.value as DateFormat;
+      setDateFormat(newDateFormat);
+      formatOptions = { ...formatOptions, dateFormat: newDateFormat };
+      updateDisplay();
+    });
+  }
 
   updateDisplay();
   setInterval(updateDisplay, 1000);

@@ -6,7 +6,35 @@
 </head>
 <body>
   <div class="container">
-    <h1>UTC / Unix Clock</h1>
+    <div class="header">
+      <h1>UTC / Unix Clock</h1>
+      <button id="settings-toggle" class="settings-toggle" title="Settings">&#9881;</button>
+    </div>
+
+    <div id="settings-panel" class="settings-panel" style="display:none">
+      <div class="setting-row">
+        <span class="setting-label">Theme</span>
+        <select id="theme-select">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Time</span>
+        <select id="hour-select">
+          <option value="24h">24-hour</option>
+          <option value="12h">12-hour</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Date</span>
+        <select id="date-format-select">
+          <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+          <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+          <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+        </select>
+      </div>
+    </div>
 
     <section class="time-block">
       <label id="utc-label">UTC</label>
