@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="62" fill="#1a1a2e" stroke="#3a3a5e" stroke-width="3"/>
+
+  <!-- Clock face ring -->
+  <circle cx="64" cy="64" r="50" fill="none" stroke="#4fc3f7" stroke-width="2.5" opacity="0.6"/>
+
+  <!-- Hour ticks -->
+  <g stroke="#4fc3f7" stroke-width="2.5" stroke-linecap="round" opacity="0.8">
+    <line x1="64" y1="18" x2="64" y2="26"/>
+    <line x1="64" y1="102" x2="64" y2="110"/>
+    <line x1="18" y1="64" x2="26" y2="64"/>
+    <line x1="102" y1="64" x2="110" y2="64"/>
+  </g>
+
+  <!-- Minor ticks -->
+  <g stroke="#4fc3f7" stroke-width="1.5" stroke-linecap="round" opacity="0.4">
+    <line x1="87" y1="20.5" x2="84" y2="27"/>
+    <line x1="107.5" y1="41" x2="101" y2="44"/>
+    <line x1="107.5" y1="87" x2="101" y2="84"/>
+    <line x1="87" y1="107.5" x2="84" y2="101"/>
+    <line x1="41" y1="107.5" x2="44" y2="101"/>
+    <line x1="20.5" y1="87" x2="27" y2="84"/>
+    <line x1="20.5" y1="41" x2="27" y2="44"/>
+    <line x1="41" y1="20.5" x2="44" y2="27"/>
+  </g>
+
+  <!-- Hour hand -->
+  <line x1="64" y1="64" x2="64" y2="36" stroke="#e0e0e0" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Minute hand -->
+  <line x1="64" y1="64" x2="88" y2="50" stroke="#e0e0e0" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Center dot -->
+  <circle cx="64" cy="64" r="3.5" fill="#4fc3f7"/>
+
+  <!-- "UTC" label -->
+  <text x="64" y="84" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#4fc3f7">UTC</text>
+
+  <!-- Epoch digits at bottom -->
+  <text x="64" y="100" text-anchor="middle" font-family="monospace" font-size="9" fill="#7a7aaa">1772368245</text>
+</svg>
