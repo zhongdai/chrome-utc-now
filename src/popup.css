@@ -46,6 +46,14 @@ h1 {
   margin: 4px 0;
 }
 
+#utc-time {
+  cursor: pointer;
+}
+
+#utc-time:hover {
+  color: #4fc3f7;
+}
+
 .epoch-row {
   display: flex;
   align-items: center;

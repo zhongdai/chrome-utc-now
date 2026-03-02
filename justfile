@@ -40,6 +40,28 @@ install: build
     @echo "    $(pwd)/dist"
     @echo ""
 
+# Bump minor version (e.g., 1.1.0 → 1.2.0)
+minor:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    current=$(node -p "require('./package.json').version")
+    IFS='.' read -r major minor patch <<< "$current"
+    new="${major}.$((minor + 1)).0"
+    npm version "$new" --no-git-tag-version
+    sed -i '' "s/\"version\": \"$current\"/\"version\": \"$new\"/" src/manifest.json
+    echo "Bumped version: $current → $new"
+
+# Bump patch version (e.g., 1.1.0 → 1.1.1)
+patch:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    current=$(node -p "require('./package.json').version")
+    IFS='.' read -r major minor patch <<< "$current"
+    new="${major}.${minor}.$((patch + 1))"
+    npm version "$new" --no-git-tag-version
+    sed -i '' "s/\"version\": \"$current\"/\"version\": \"$new\"/" src/manifest.json
+    echo "Bumped version: $current → $new"
+
 # Clean build artifacts
 clean:
     rm -rf dist extension.zip

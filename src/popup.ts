@@ -1,17 +1,20 @@
-import { formatUtcTime, formatUnixEpoch, formatTimezone, getTimezoneOffset } from './time';
+import { formatUtcTime, formatLocalTime, formatUnixEpoch, formatTimezone, getTimezoneOffset } from './time';
 import { getTimezone, setTimezone, TIMEZONE_OPTIONS } from './settings';
 
 let currentTimezone = 'Australia/Sydney';
+let showUtc = true;
 
 function updateDisplay(): void {
   const now = new Date();
 
   const utcEl = document.getElementById('utc-time');
+  const utcLabel = document.getElementById('utc-label');
   const epochEl = document.getElementById('unix-epoch');
   const tzTimeEl = document.getElementById('tz-time');
   const tzOffsetEl = document.getElementById('tz-offset');
 
-  if (utcEl) utcEl.textContent = formatUtcTime(now);
+  if (utcEl) utcEl.textContent = showUtc ? formatUtcTime(now) : formatLocalTime(now);
+  if (utcLabel) utcLabel.textContent = showUtc ? 'UTC' : 'LOCAL';
   if (epochEl) epochEl.textContent = formatUnixEpoch(now);
   if (tzTimeEl) tzTimeEl.textContent = formatTimezone(now, currentTimezone);
   if (tzOffsetEl) tzOffsetEl.textContent = `UTC${getTimezoneOffset(now, currentTimezone)}`;
@@ -59,6 +62,14 @@ function init(): void {
   const epochEl = document.getElementById('unix-epoch');
   if (epochEl) {
     epochEl.addEventListener('click', handleEpochClick);
+  }
+
+  const utcEl = document.getElementById('utc-time');
+  if (utcEl) {
+    utcEl.addEventListener('click', () => {
+      showUtc = !showUtc;
+      updateDisplay();
+    });
   }
 
   updateDisplay();

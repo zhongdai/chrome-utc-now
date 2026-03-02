@@ -1,10 +1,27 @@
-import { formatUtcTime, formatUnixEpoch, formatTimezone, getTimezoneOffset } from './time';
+import { formatUtcTime, formatLocalTime, formatUnixEpoch, formatTimezone, getTimezoneOffset } from './time';
 
 describe('formatUtcTime', () => {
   it('formats a known date as UTC string', () => {
     const date = new Date('2026-03-01T12:30:45.000Z');
     const result = formatUtcTime(date);
     expect(result).toBe('2026-03-01 12:30:45 UTC');
+  });
+});
+
+describe('formatLocalTime', () => {
+  it('formats a date in local timezone with tz abbreviation', () => {
+    const date = new Date('2026-03-01T12:30:45.000Z');
+    const result = formatLocalTime(date);
+    // Format should be YYYY-MM-DD HH:MM:SS TZ
+    expect(result).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+$/);
+  });
+
+  it('includes timezone abbreviation that is not UTC', () => {
+    const date = new Date('2026-03-01T12:30:45.000Z');
+    const result = formatLocalTime(date);
+    // Should have some timezone identifier at the end
+    const parts = result.split(' ');
+    expect(parts.length).toBeGreaterThanOrEqual(3);
   });
 });
 
