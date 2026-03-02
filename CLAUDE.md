@@ -26,7 +26,7 @@ Chrome extension (Manifest V3) that shows current UTC time, Unix epoch (click to
 ## CI/CD
 
 - **CI** (`.github/workflows/ci.yml`): lint + test + build on push/PR to main.
-- **Publish** (`.github/workflows/publish.yml`): On `v*` tag, builds zip and uploads to Chrome Web Store. Requires GitHub secrets: `CHROME_EXTENSION_ID`, `CHROME_CLIENT_ID`, `CHROME_CLIENT_SECRET`, `CHROME_REFRESH_TOKEN`.
+- **Release** (`.github/workflows/publish.yml`): On push to main, reads version from `package.json`, auto-tags if new, and creates a GitHub Release with `extension.zip` attached. Bump version in both `package.json` and `src/manifest.json` before pushing to trigger a release.
 
 ## Local Testing
 
