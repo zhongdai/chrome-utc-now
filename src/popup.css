@@ -46,7 +46,8 @@ h1 {
   margin: 4px 0;
 }
 
-#utc-time {
+#utc-time,
+#tz-time {
   cursor: pointer;
   font-size: 16px;
   white-space: nowrap;
