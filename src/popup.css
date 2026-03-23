@@ -95,6 +95,11 @@ h1 {
   color: var(--text-muted);
 }
 
+.setting-row select,
+.setting-row input[type="checkbox"] {
+  cursor: pointer;
+}
+
 .setting-row select {
   background: var(--input-bg);
   color: var(--text);
@@ -102,7 +107,6 @@ h1 {
   border-radius: 4px;
   padding: 3px 6px;
   font-size: 12px;
-  cursor: pointer;
 }
 
 .time-block {

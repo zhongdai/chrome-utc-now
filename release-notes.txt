@@ -14,6 +14,7 @@ Got a timestamp from a log? Paste it into the epoch converter to instantly see t
 • Unix epoch — click to copy to clipboard instantly
 • Second timezone — configurable dropdown (default: Sydney), click to copy, day/night indicator
 • Epoch converter — paste any Unix timestamp to see UTC and local time with relative time (e.g. "3h 30m ago"), click to copy
+• Reverse converter — enable in settings to also paste date strings (ISO 8601, ISO Short, RFC 2822) and get the epoch back
 • Standard time formats — ISO Short, ISO 8601, RFC 2822
 • Dark / Light theme
 • All preferences persist across sessions

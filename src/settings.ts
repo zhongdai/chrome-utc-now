@@ -47,3 +47,11 @@ export function getFormat(): TimeFormat {
 export function setFormat(format: TimeFormat): void {
   localStorage.setItem('format', format);
 }
+
+export function getReverseConverter(): boolean {
+  return localStorage.getItem('reverseConverter') === 'true';
+}
+
+export function setReverseConverter(value: boolean): void {
+  localStorage.setItem('reverseConverter', String(value));
+}

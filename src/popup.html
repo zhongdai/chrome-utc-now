@@ -27,6 +27,10 @@
           <option value="rfc2822">RFC 2822</option>
         </select>
       </div>
+      <div class="setting-row">
+        <span class="setting-label">Reverse converter</span>
+        <input type="checkbox" id="reverse-toggle" />
+      </div>
     </div>
 
     <section class="time-block">
@@ -66,6 +70,13 @@
       <input id="epoch-input" type="text" placeholder="Enter unix timestamp..." />
       <div id="convert-results" class="convert-results" style="display:none">
         <div id="convert-relative" class="relative-time"></div>
+        <div id="convert-epoch-row" style="display:none">
+          <label>EPOCH</label>
+          <div class="copyable-row">
+            <div id="convert-epoch" class="time-value" title="Click to copy"></div>
+            <span class="copy-feedback">Copied!</span>
+          </div>
+        </div>
         <label>UTC</label>
         <div class="copyable-row">
           <div id="convert-utc" class="time-value" title="Click to copy"></div>

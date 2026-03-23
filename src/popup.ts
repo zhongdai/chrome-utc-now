@@ -6,6 +6,7 @@ import {
   getTimezoneOffset,
   formatRelativeTime,
   isDaytime,
+  parseDateTime,
   TimeFormat,
 } from './time';
 import {
@@ -15,12 +16,15 @@ import {
   setTheme,
   getFormat,
   setFormat,
+  getReverseConverter,
+  setReverseConverter,
   TIMEZONE_OPTIONS,
   Theme,
 } from './settings';
 
 let currentTimezone = 'Australia/Sydney';
 let currentFormat: TimeFormat = 'iso-short';
+let reverseEnabled = false;
 
 function updateDisplay(): void {
   const now = new Date();
@@ -66,12 +70,20 @@ async function handleEpochClick(): Promise<void> {
   await copyAndFeedback(epochEl, feedbackEl);
 }
 
+function tryParseEpoch(raw: string): Date | null {
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 0 || parsed > 99999999999) return null;
+  return new Date(parsed * 1000);
+}
+
 function handleEpochInput(event: Event): void {
   const input = event.target as HTMLInputElement;
   const resultsEl = document.getElementById('convert-results');
   const utcEl = document.getElementById('convert-utc');
   const localEl = document.getElementById('convert-local');
   const relativeEl = document.getElementById('convert-relative');
+  const epochRowEl = document.getElementById('convert-epoch-row');
+  const epochEl = document.getElementById('convert-epoch');
 
   if (!resultsEl || !utcEl || !localEl) return;
 
@@ -81,13 +93,31 @@ function handleEpochInput(event: Event): void {
     return;
   }
 
-  const parsed = Number(raw);
-  if (!Number.isFinite(parsed) || parsed < 0 || parsed > 99999999999) {
+  // Try epoch first (all-digit input)
+  let date = tryParseEpoch(raw);
+  let isReverse = false;
+
+  // If not a valid epoch and reverse is enabled, try parsing as date string
+  if (!date && reverseEnabled) {
+    date = parseDateTime(raw);
+    isReverse = date !== null;
+  }
+
+  if (!date) {
     resultsEl.style.display = 'none';
     return;
   }
 
-  const date = new Date(parsed * 1000);
+  // Show epoch row only for reverse conversion
+  if (epochRowEl && epochEl) {
+    if (isReverse) {
+      epochEl.textContent = formatUnixEpoch(date);
+      epochRowEl.style.display = 'block';
+    } else {
+      epochRowEl.style.display = 'none';
+    }
+  }
+
   utcEl.textContent = formatUtcTime(date, currentFormat);
   localEl.textContent = formatLocalTime(date, currentFormat);
   if (relativeEl) relativeEl.textContent = formatRelativeTime(date);
@@ -111,6 +141,7 @@ function init(): void {
   // Load settings
   const theme = getTheme();
   currentFormat = getFormat();
+  reverseEnabled = getReverseConverter();
   applyTheme(theme);
 
   // Timezone select
@@ -168,6 +199,27 @@ function init(): void {
       currentFormat = formatSelect.value as TimeFormat;
       setFormat(currentFormat);
       updateDisplay();
+    });
+  }
+
+  // Reverse converter toggle
+  const reverseToggle = document.getElementById('reverse-toggle') as HTMLInputElement | null;
+  const epochInput2 = document.getElementById('epoch-input') as HTMLInputElement | null;
+  if (reverseToggle) {
+    reverseToggle.checked = reverseEnabled;
+    if (epochInput2) {
+      epochInput2.placeholder = reverseEnabled
+        ? 'Enter epoch or date string...'
+        : 'Enter unix timestamp...';
+    }
+    reverseToggle.addEventListener('change', () => {
+      reverseEnabled = reverseToggle.checked;
+      setReverseConverter(reverseEnabled);
+      if (epochInput2) {
+        epochInput2.placeholder = reverseEnabled
+          ? 'Enter epoch or date string...'
+          : 'Enter unix timestamp...';
+      }
     });
   }
 

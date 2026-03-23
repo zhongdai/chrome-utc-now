@@ -166,6 +166,27 @@ export function isDaytime(date: Date, timezone: string): boolean {
   return hour >= 6 && hour < 18;
 }
 
+export function parseDateTime(input: string): Date | null {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  // ISO short: "2026-03-22 11:30:45" or "2026-03-22 11:30:45 UTC/AEDT/etc"
+  // Must check before native Date parse, which treats "YYYY-MM-DD HH:MM:SS" as local time
+  const isoShortMatch = trimmed.match(
+    /^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}:\d{2})(?:\s+[A-Za-z/]+)?$/,
+  );
+  if (isoShortMatch) {
+    const date = new Date(`${isoShortMatch[1]}T${isoShortMatch[2]}Z`);
+    if (!isNaN(date.getTime())) return date;
+  }
+
+  // Native Date parse (handles ISO 8601, RFC 2822)
+  const direct = new Date(trimmed);
+  if (!isNaN(direct.getTime())) return direct;
+
+  return null;
+}
+
 export function getTimezoneOffset(date: Date, timezone: string): string {
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: timezone,

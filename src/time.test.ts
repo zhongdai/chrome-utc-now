@@ -6,6 +6,7 @@ import {
   getTimezoneOffset,
   formatRelativeTime,
   isDaytime,
+  parseDateTime,
 } from './time';
 
 describe('formatUtcTime', () => {
@@ -112,6 +113,46 @@ describe('formatRelativeTime', () => {
   it('formats years ago', () => {
     const date = new Date('2024-03-22T12:00:00.000Z');
     expect(formatRelativeTime(date, now)).toBe('2y 0d ago');
+  });
+});
+
+describe('parseDateTime', () => {
+  it('parses ISO 8601', () => {
+    const date = parseDateTime('2026-03-22T11:30:45Z');
+    expect(date).not.toBeNull();
+    expect(date!.toISOString()).toBe('2026-03-22T11:30:45.000Z');
+  });
+
+  it('parses ISO 8601 with offset', () => {
+    const date = parseDateTime('2026-03-22T22:30:45+11:00');
+    expect(date).not.toBeNull();
+    expect(date!.toISOString()).toBe('2026-03-22T11:30:45.000Z');
+  });
+
+  it('parses ISO short', () => {
+    const date = parseDateTime('2026-03-22 11:30:45');
+    expect(date).not.toBeNull();
+    expect(date!.toISOString()).toBe('2026-03-22T11:30:45.000Z');
+  });
+
+  it('parses ISO short with trailing tz abbreviation', () => {
+    const date = parseDateTime('2026-03-22 11:30:45 UTC');
+    expect(date).not.toBeNull();
+    expect(date!.toISOString()).toBe('2026-03-22T11:30:45.000Z');
+  });
+
+  it('parses RFC 2822', () => {
+    const date = parseDateTime('Sun, 22 Mar 2026 11:30:45 GMT');
+    expect(date).not.toBeNull();
+    expect(date!.toISOString()).toBe('2026-03-22T11:30:45.000Z');
+  });
+
+  it('returns null for empty input', () => {
+    expect(parseDateTime('')).toBeNull();
+  });
+
+  it('returns null for garbage input', () => {
+    expect(parseDateTime('not a date')).toBeNull();
   });
 });
 

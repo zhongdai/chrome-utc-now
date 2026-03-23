@@ -5,6 +5,8 @@ import {
   setTheme,
   getFormat,
   setFormat,
+  getReverseConverter,
+  setReverseConverter,
   TIMEZONE_OPTIONS,
   DEFAULT_TIMEZONE,
 } from './settings';
@@ -95,5 +97,23 @@ describe('setFormat', () => {
   it('stores format', () => {
     setFormat('rfc2822');
     expect(mockStorage['format']).toBe('rfc2822');
+  });
+});
+
+describe('getReverseConverter', () => {
+  it('returns false when nothing stored', () => {
+    expect(getReverseConverter()).toBe(false);
+  });
+
+  it('returns true when stored as "true"', () => {
+    mockStorage['reverseConverter'] = 'true';
+    expect(getReverseConverter()).toBe(true);
+  });
+});
+
+describe('setReverseConverter', () => {
+  it('stores value', () => {
+    setReverseConverter(true);
+    expect(mockStorage['reverseConverter']).toBe('true');
   });
 });

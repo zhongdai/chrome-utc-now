@@ -23,6 +23,7 @@ A minimal Chrome extension that shows the current UTC time and Unix epoch at a g
 - **Settings panel** — click the gear icon to configure:
   - **Dark / Light theme** — switch between dark and light mode
   - **Time format** — ISO Short (`2026-03-22 11:30:45 UTC`), ISO 8601 (`2026-03-22T11:30:45Z`), or RFC 2822 (`Sun, 22 Mar 2026 11:30:45 GMT`)
+  - **Reverse converter** — enable to also accept date strings in the converter (date → epoch). Off by default
   - All preferences are saved and persist across sessions
 
 ## Install
