@@ -104,6 +104,38 @@ export function formatLocalTime(
   return formatWithIntl(date, undefined, options);
 }
 
+export function formatRelativeTime(date: Date, now: Date = new Date()): string {
+  const diffMs = date.getTime() - now.getTime();
+  const absDiff = Math.abs(diffMs);
+  const seconds = Math.floor(absDiff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  let value: string;
+  if (seconds < 60) value = `${seconds}s`;
+  else if (minutes < 60) value = `${minutes}m`;
+  else if (hours < 24) value = `${hours}h ${minutes % 60}m`;
+  else if (days < 365) value = `${days}d ${hours % 24}h`;
+  else value = `${Math.floor(days / 365)}y ${days % 365}d`;
+
+  return diffMs >= 0 ? `in ${value}` : `${value} ago`;
+}
+
+export function getTimezoneHour(date: Date, timezone: string): number {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    hour: 'numeric',
+    hour12: false,
+  });
+  return parseInt(formatter.format(date), 10);
+}
+
+export function isDaytime(date: Date, timezone: string): boolean {
+  const hour = getTimezoneHour(date, timezone);
+  return hour >= 6 && hour < 18;
+}
+
 export function getTimezoneOffset(date: Date, timezone: string): string {
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: timezone,

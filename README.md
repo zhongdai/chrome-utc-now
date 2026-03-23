@@ -16,8 +16,8 @@ A minimal Chrome extension that shows the current UTC time and Unix epoch at a g
 
 - **Live UTC + Local clock** — current date and time in both UTC and local, updates every second. Click either to copy
 - **Unix epoch** — click to copy to clipboard instantly
-- **Second timezone** — configurable dropdown (default: Sydney). Click to copy. Handy for distributed teams
-- **Epoch converter** — paste any Unix timestamp (seconds) to see it as UTC and local time, click either result to copy
+- **Second timezone** — configurable dropdown (default: Sydney). Click to copy. Day/night indicator. Handy for distributed teams
+- **Epoch converter** — paste any Unix timestamp (seconds) to see it as UTC and local time with relative time (e.g. "3h 30m ago"), click either result to copy
 - **Settings panel** — click the gear icon to configure:
   - **Dark / Light theme** — switch between dark and light mode
   - **12h / 24h time format** — choose between 24-hour and 12-hour (AM/PM) display

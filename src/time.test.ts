@@ -4,6 +4,8 @@ import {
   formatUnixEpoch,
   formatTimezone,
   getTimezoneOffset,
+  formatRelativeTime,
+  isDaytime,
   FormatOptions,
 } from './time';
 
@@ -128,5 +130,46 @@ describe('getTimezoneOffset', () => {
     const date = new Date('2026-03-01T12:30:45.000Z');
     const result = getTimezoneOffset(date, 'Australia/Sydney');
     expect(result).toBe('+11:00');
+  });
+});
+
+describe('formatRelativeTime', () => {
+  const now = new Date('2026-03-22T12:00:00.000Z');
+
+  it('formats seconds ago', () => {
+    const date = new Date('2026-03-22T11:59:30.000Z');
+    expect(formatRelativeTime(date, now)).toBe('30s ago');
+  });
+
+  it('formats minutes ago', () => {
+    const date = new Date('2026-03-22T11:45:00.000Z');
+    expect(formatRelativeTime(date, now)).toBe('15m ago');
+  });
+
+  it('formats hours and minutes ago', () => {
+    const date = new Date('2026-03-22T09:30:00.000Z');
+    expect(formatRelativeTime(date, now)).toBe('2h 30m ago');
+  });
+
+  it('formats days in the future', () => {
+    const date = new Date('2026-03-25T12:00:00.000Z');
+    expect(formatRelativeTime(date, now)).toBe('in 3d 0h');
+  });
+
+  it('formats years ago', () => {
+    const date = new Date('2024-03-22T12:00:00.000Z');
+    expect(formatRelativeTime(date, now)).toBe('2y 0d ago');
+  });
+});
+
+describe('isDaytime', () => {
+  it('returns true during daytime hours', () => {
+    const date = new Date('2026-03-22T01:00:00.000Z'); // 12:00 AEDT
+    expect(isDaytime(date, 'Australia/Sydney')).toBe(true);
+  });
+
+  it('returns false during nighttime hours', () => {
+    const date = new Date('2026-03-22T15:00:00.000Z'); // 02:00 AEDT
+    expect(isDaytime(date, 'Australia/Sydney')).toBe(false);
   });
 });

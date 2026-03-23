@@ -62,13 +62,17 @@
         <div id="tz-time" class="time-value" title="Click to copy"></div>
         <span class="copy-feedback">Copied!</span>
       </div>
-      <div id="tz-offset" class="offset-value"></div>
+      <div class="tz-meta">
+        <span id="tz-offset" class="offset-value"></span>
+        <span id="tz-daynight" class="daynight-icon"></span>
+      </div>
     </section>
 
     <section class="time-block">
       <label>EPOCH CONVERTER</label>
       <input id="epoch-input" type="text" placeholder="Enter unix timestamp..." />
       <div id="convert-results" class="convert-results" style="display:none">
+        <div id="convert-relative" class="relative-time"></div>
         <label>UTC</label>
         <div class="copyable-row">
           <div id="convert-utc" class="time-value" title="Click to copy"></div>

@@ -88,10 +88,18 @@
       color: #7a7aaa;
       margin-bottom: 6px;
     }
+    .tz-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
     .offset {
       font-size: 12px;
       color: #7a7aaa;
-      margin-top: 4px;
+    }
+    .daynight-icon {
+      font-size: 13px;
     }
     .converter-input {
       background: #1a1a2e;
@@ -106,6 +114,11 @@
     }
     .convert-results {
       margin-top: 10px;
+    }
+    .relative-time {
+      font-size: 12px;
+      color: #4fc3f7;
+      margin-bottom: 4px;
     }
     .version {
       text-align: left;
@@ -158,13 +171,17 @@
     <div class="time-block">
       <div class="tz-name">Australia/Sydney</div>
       <div class="time-value">2026-03-22 22:30:45 AEDT</div>
-      <div class="offset">UTC+11:00</div>
+      <div class="tz-meta">
+        <span class="offset">UTC+11:00</span>
+        <span class="daynight-icon">&#9790;</span>
+      </div>
     </div>
 
     <div class="time-block">
       <label>Epoch Converter</label>
       <input class="converter-input" value="1774391445" readonly />
       <div class="convert-results">
+        <div class="relative-time">3h 30m ago</div>
         <label>UTC</label>
         <div class="time-value">2026-03-22 11:30:45 UTC</div>
         <label>LOCAL</label>
@@ -172,7 +189,7 @@
       </div>
     </div>
 
-    <div class="version">v1.5.0</div>
+    <div class="version">v1.6.0</div>
   </div>
 
   <div class="features">

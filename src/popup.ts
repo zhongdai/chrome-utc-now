@@ -4,6 +4,8 @@ import {
   formatUnixEpoch,
   formatTimezone,
   getTimezoneOffset,
+  formatRelativeTime,
+  isDaytime,
   FormatOptions,
 } from './time';
 import {
@@ -31,12 +33,14 @@ function updateDisplay(): void {
   const epochEl = document.getElementById('unix-epoch');
   const tzTimeEl = document.getElementById('tz-time');
   const tzOffsetEl = document.getElementById('tz-offset');
+  const tzDayNightEl = document.getElementById('tz-daynight');
 
   if (utcEl) utcEl.textContent = formatUtcTime(now, formatOptions);
   if (localEl) localEl.textContent = formatLocalTime(now, formatOptions);
   if (epochEl) epochEl.textContent = formatUnixEpoch(now);
   if (tzTimeEl) tzTimeEl.textContent = formatTimezone(now, currentTimezone, formatOptions);
   if (tzOffsetEl) tzOffsetEl.textContent = `UTC${getTimezoneOffset(now, currentTimezone)}`;
+  if (tzDayNightEl) tzDayNightEl.textContent = isDaytime(now, currentTimezone) ? '\u2600' : '\u263E';
 }
 
 function populateTimezoneSelect(select: HTMLSelectElement): void {
@@ -70,6 +74,7 @@ function handleEpochInput(event: Event): void {
   const resultsEl = document.getElementById('convert-results');
   const utcEl = document.getElementById('convert-utc');
   const localEl = document.getElementById('convert-local');
+  const relativeEl = document.getElementById('convert-relative');
 
   if (!resultsEl || !utcEl || !localEl) return;
 
@@ -88,6 +93,7 @@ function handleEpochInput(event: Event): void {
   const date = new Date(parsed * 1000);
   utcEl.textContent = formatUtcTime(date, formatOptions);
   localEl.textContent = formatLocalTime(date, formatOptions);
+  if (relativeEl) relativeEl.textContent = formatRelativeTime(date);
   resultsEl.style.display = 'block';
 }
 
