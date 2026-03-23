@@ -2,7 +2,9 @@
 
 A minimal Chrome extension that shows the current UTC time and Unix epoch at a glance. Includes a configurable second timezone and a built-in epoch converter.
 
-![Screenshot](store/screenshot-1280x800.png)
+![Main UI](store/main-ui-1280x800.png)
+
+![Settings](store/settings-ui-1280x800.png)
 
 ## Why?
 
@@ -20,8 +22,7 @@ A minimal Chrome extension that shows the current UTC time and Unix epoch at a g
 - **Epoch converter** — paste any Unix timestamp (seconds) to see it as UTC and local time with relative time (e.g. "3h 30m ago"), click either result to copy
 - **Settings panel** — click the gear icon to configure:
   - **Dark / Light theme** — switch between dark and light mode
-  - **12h / 24h time format** — choose between 24-hour and 12-hour (AM/PM) display
-  - **Date format** — pick from YYYY-MM-DD, DD/MM/YYYY, or MM/DD/YYYY
+  - **Time format** — ISO Short (`2026-03-22 11:30:45 UTC`), ISO 8601 (`2026-03-22T11:30:45Z`), or RFC 2822 (`Sun, 22 Mar 2026 11:30:45 GMT`)
   - All preferences are saved and persist across sessions
 
 ## Install

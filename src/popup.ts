@@ -6,24 +6,21 @@ import {
   getTimezoneOffset,
   formatRelativeTime,
   isDaytime,
-  FormatOptions,
+  TimeFormat,
 } from './time';
 import {
   getTimezone,
   setTimezone,
   getTheme,
   setTheme,
-  getHour12,
-  setHour12,
-  getDateFormat,
-  setDateFormat,
+  getFormat,
+  setFormat,
   TIMEZONE_OPTIONS,
   Theme,
-  DateFormat,
 } from './settings';
 
 let currentTimezone = 'Australia/Sydney';
-let formatOptions: FormatOptions = { hour12: false, dateFormat: 'YYYY-MM-DD' };
+let currentFormat: TimeFormat = 'iso-short';
 
 function updateDisplay(): void {
   const now = new Date();
@@ -35,10 +32,10 @@ function updateDisplay(): void {
   const tzOffsetEl = document.getElementById('tz-offset');
   const tzDayNightEl = document.getElementById('tz-daynight');
 
-  if (utcEl) utcEl.textContent = formatUtcTime(now, formatOptions);
-  if (localEl) localEl.textContent = formatLocalTime(now, formatOptions);
+  if (utcEl) utcEl.textContent = formatUtcTime(now, currentFormat);
+  if (localEl) localEl.textContent = formatLocalTime(now, currentFormat);
   if (epochEl) epochEl.textContent = formatUnixEpoch(now);
-  if (tzTimeEl) tzTimeEl.textContent = formatTimezone(now, currentTimezone, formatOptions);
+  if (tzTimeEl) tzTimeEl.textContent = formatTimezone(now, currentTimezone, currentFormat);
   if (tzOffsetEl) tzOffsetEl.textContent = `UTC${getTimezoneOffset(now, currentTimezone)}`;
   if (tzDayNightEl) tzDayNightEl.textContent = isDaytime(now, currentTimezone) ? '\u2600' : '\u263E';
 }
@@ -91,8 +88,8 @@ function handleEpochInput(event: Event): void {
   }
 
   const date = new Date(parsed * 1000);
-  utcEl.textContent = formatUtcTime(date, formatOptions);
-  localEl.textContent = formatLocalTime(date, formatOptions);
+  utcEl.textContent = formatUtcTime(date, currentFormat);
+  localEl.textContent = formatLocalTime(date, currentFormat);
   if (relativeEl) relativeEl.textContent = formatRelativeTime(date);
   resultsEl.style.display = 'block';
 }
@@ -113,9 +110,7 @@ function init(): void {
 
   // Load settings
   const theme = getTheme();
-  const hour12 = getHour12();
-  const dateFormat = getDateFormat();
-  formatOptions = { hour12, dateFormat };
+  currentFormat = getFormat();
   applyTheme(theme);
 
   // Timezone select
@@ -165,26 +160,13 @@ function init(): void {
     });
   }
 
-  // Hour format select
-  const hourSelect = document.getElementById('hour-select') as HTMLSelectElement | null;
-  if (hourSelect) {
-    hourSelect.value = hour12 ? '12h' : '24h';
-    hourSelect.addEventListener('change', () => {
-      const newHour12 = hourSelect.value === '12h';
-      setHour12(newHour12);
-      formatOptions = { ...formatOptions, hour12: newHour12 };
-      updateDisplay();
-    });
-  }
-
-  // Date format select
-  const dateFormatSelect = document.getElementById('date-format-select') as HTMLSelectElement | null;
-  if (dateFormatSelect) {
-    dateFormatSelect.value = dateFormat;
-    dateFormatSelect.addEventListener('change', () => {
-      const newDateFormat = dateFormatSelect.value as DateFormat;
-      setDateFormat(newDateFormat);
-      formatOptions = { ...formatOptions, dateFormat: newDateFormat };
+  // Format select
+  const formatSelect = document.getElementById('format-select') as HTMLSelectElement | null;
+  if (formatSelect) {
+    formatSelect.value = currentFormat;
+    formatSelect.addEventListener('change', () => {
+      currentFormat = formatSelect.value as TimeFormat;
+      setFormat(currentFormat);
       updateDisplay();
     });
   }

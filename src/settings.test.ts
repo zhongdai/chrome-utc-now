@@ -3,10 +3,8 @@ import {
   setTimezone,
   getTheme,
   setTheme,
-  getHour12,
-  setHour12,
-  getDateFormat,
-  setDateFormat,
+  getFormat,
+  setFormat,
   TIMEZONE_OPTIONS,
   DEFAULT_TIMEZONE,
 } from './settings';
@@ -43,14 +41,12 @@ describe('TIMEZONE_OPTIONS', () => {
 
 describe('getTimezone', () => {
   it('returns default when nothing stored', () => {
-    const tz = getTimezone();
-    expect(tz).toBe('Australia/Sydney');
+    expect(getTimezone()).toBe('Australia/Sydney');
   });
 
   it('returns stored timezone', () => {
     mockStorage['timezone'] = 'America/New_York';
-    const tz = getTimezone();
-    expect(tz).toBe('America/New_York');
+    expect(getTimezone()).toBe('America/New_York');
   });
 });
 
@@ -79,48 +75,25 @@ describe('setTheme', () => {
   });
 });
 
-describe('getHour12', () => {
-  it('returns false when nothing stored', () => {
-    expect(getHour12()).toBe(false);
+describe('getFormat', () => {
+  it('returns iso-short when nothing stored', () => {
+    expect(getFormat()).toBe('iso-short');
   });
 
-  it('returns true when stored as "true"', () => {
-    mockStorage['hour12'] = 'true';
-    expect(getHour12()).toBe(true);
+  it('returns stored format', () => {
+    mockStorage['format'] = 'iso';
+    expect(getFormat()).toBe('iso');
   });
 
-  it('returns false when stored as "false"', () => {
-    mockStorage['hour12'] = 'false';
-    expect(getHour12()).toBe(false);
-  });
-});
-
-describe('setHour12', () => {
-  it('stores true', () => {
-    setHour12(true);
-    expect(mockStorage['hour12']).toBe('true');
-  });
-
-  it('stores false', () => {
-    setHour12(false);
-    expect(mockStorage['hour12']).toBe('false');
+  it('returns rfc2822 when stored', () => {
+    mockStorage['format'] = 'rfc2822';
+    expect(getFormat()).toBe('rfc2822');
   });
 });
 
-describe('getDateFormat', () => {
-  it('returns YYYY-MM-DD when nothing stored', () => {
-    expect(getDateFormat()).toBe('YYYY-MM-DD');
-  });
-
-  it('returns stored date format', () => {
-    mockStorage['dateFormat'] = 'DD/MM/YYYY';
-    expect(getDateFormat()).toBe('DD/MM/YYYY');
-  });
-});
-
-describe('setDateFormat', () => {
-  it('stores date format', () => {
-    setDateFormat('MM/DD/YYYY');
-    expect(mockStorage['dateFormat']).toBe('MM/DD/YYYY');
+describe('setFormat', () => {
+  it('stores format', () => {
+    setFormat('rfc2822');
+    expect(mockStorage['format']).toBe('rfc2822');
   });
 });

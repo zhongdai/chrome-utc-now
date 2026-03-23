@@ -6,130 +6,83 @@ import {
   getTimezoneOffset,
   formatRelativeTime,
   isDaytime,
-  FormatOptions,
 } from './time';
 
 describe('formatUtcTime', () => {
-  it('formats a known date as UTC string (default options)', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const result = formatUtcTime(date);
-    expect(result).toBe('2026-03-01 12:30:45 UTC');
+  const date = new Date('2026-03-01T12:30:45.000Z');
+
+  it('formats as ISO short (default)', () => {
+    expect(formatUtcTime(date)).toBe('2026-03-01 12:30:45 UTC');
   });
 
-  it('formats in 12-hour mode', () => {
-    const date = new Date('2026-03-01T14:30:45.000Z');
-    const opts: FormatOptions = { hour12: true, dateFormat: 'YYYY-MM-DD' };
-    const result = formatUtcTime(date, opts);
-    expect(result).toBe('2026-03-01 2:30:45 PM UTC');
+  it('formats as ISO short explicitly', () => {
+    expect(formatUtcTime(date, 'iso-short')).toBe('2026-03-01 12:30:45 UTC');
   });
 
-  it('formats 12-hour mode for AM', () => {
-    const date = new Date('2026-03-01T09:05:03.000Z');
-    const opts: FormatOptions = { hour12: true, dateFormat: 'YYYY-MM-DD' };
-    const result = formatUtcTime(date, opts);
-    expect(result).toBe('2026-03-01 9:05:03 AM UTC');
+  it('formats as ISO 8601', () => {
+    expect(formatUtcTime(date, 'iso')).toBe('2026-03-01T12:30:45Z');
   });
 
-  it('formats midnight as 12 AM in 12-hour mode', () => {
-    const date = new Date('2026-03-01T00:00:00.000Z');
-    const opts: FormatOptions = { hour12: true, dateFormat: 'YYYY-MM-DD' };
-    const result = formatUtcTime(date, opts);
-    expect(result).toBe('2026-03-01 12:00:00 AM UTC');
+  it('formats as RFC 2822', () => {
+    expect(formatUtcTime(date, 'rfc2822')).toBe('Sun, 01 Mar 2026 12:30:45 GMT');
   });
 
-  it('formats noon as 12 PM in 12-hour mode', () => {
-    const date = new Date('2026-03-01T12:00:00.000Z');
-    const opts: FormatOptions = { hour12: true, dateFormat: 'YYYY-MM-DD' };
-    const result = formatUtcTime(date, opts);
-    expect(result).toBe('2026-03-01 12:00:00 PM UTC');
-  });
-
-  it('formats with DD/MM/YYYY date format', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const opts: FormatOptions = { hour12: false, dateFormat: 'DD/MM/YYYY' };
-    const result = formatUtcTime(date, opts);
-    expect(result).toBe('01/03/2026 12:30:45 UTC');
-  });
-
-  it('formats with MM/DD/YYYY date format', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const opts: FormatOptions = { hour12: false, dateFormat: 'MM/DD/YYYY' };
-    const result = formatUtcTime(date, opts);
-    expect(result).toBe('03/01/2026 12:30:45 UTC');
-  });
-
-  it('formats with DD/MM/YYYY and 12-hour combined', () => {
-    const date = new Date('2026-03-01T14:30:45.000Z');
-    const opts: FormatOptions = { hour12: true, dateFormat: 'DD/MM/YYYY' };
-    const result = formatUtcTime(date, opts);
-    expect(result).toBe('01/03/2026 2:30:45 PM UTC');
+  it('formats midnight as ISO 8601', () => {
+    const midnight = new Date('2026-03-01T00:00:00.000Z');
+    expect(formatUtcTime(midnight, 'iso')).toBe('2026-03-01T00:00:00Z');
   });
 });
 
 describe('formatLocalTime', () => {
-  it('formats a date in local timezone with tz abbreviation (default options)', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
+  const date = new Date('2026-03-01T12:30:45.000Z');
+
+  it('formats as ISO short (default)', () => {
     const result = formatLocalTime(date);
-    // Format should be YYYY-MM-DD HH:MM:SS TZ
     expect(result).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .+$/);
   });
 
-  it('includes timezone abbreviation that is not UTC', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const result = formatLocalTime(date);
-    const parts = result.split(' ');
-    expect(parts.length).toBeGreaterThanOrEqual(3);
+  it('formats as ISO 8601', () => {
+    const result = formatLocalTime(date, 'iso');
+    expect(result).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[Z+-]/);
   });
 
-  it('formats with DD/MM/YYYY date format', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const opts: FormatOptions = { hour12: false, dateFormat: 'DD/MM/YYYY' };
-    const result = formatLocalTime(date, opts);
-    expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2} .+$/);
+  it('formats as RFC 2822', () => {
+    const result = formatLocalTime(date, 'rfc2822');
+    expect(result).toMatch(/^\w{3}, \d{2} \w{3} \d{4} \d{2}:\d{2}:\d{2} [+-]\d{4}$/);
   });
 });
 
 describe('formatUnixEpoch', () => {
   it('returns unix epoch in seconds', () => {
     const date = new Date('2026-03-01T12:30:45.000Z');
-    const result = formatUnixEpoch(date);
-    expect(result).toBe('1772368245');
+    expect(formatUnixEpoch(date)).toBe('1772368245');
   });
 });
 
 describe('formatTimezone', () => {
-  it('formats a date in Australia/Sydney timezone (default options)', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const result = formatTimezone(date, 'Australia/Sydney');
-    expect(result).toBe('2026-03-01 23:30:45 AEDT');
+  const date = new Date('2026-03-01T12:30:45.000Z');
+
+  it('formats Sydney as ISO short (default)', () => {
+    expect(formatTimezone(date, 'Australia/Sydney')).toBe('2026-03-01 23:30:45 AEDT');
   });
 
-  it('formats a date in America/New_York timezone', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const result = formatTimezone(date, 'America/New_York');
-    expect(result).toBe('2026-03-01 07:30:45 GMT-5');
+  it('formats New York as ISO short', () => {
+    expect(formatTimezone(date, 'America/New_York')).toBe('2026-03-01 07:30:45 GMT-5');
   });
 
-  it('formats with DD/MM/YYYY date format', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const opts: FormatOptions = { hour12: false, dateFormat: 'DD/MM/YYYY' };
-    const result = formatTimezone(date, 'Australia/Sydney', opts);
-    expect(result).toBe('01/03/2026 23:30:45 AEDT');
+  it('formats Sydney as ISO 8601', () => {
+    expect(formatTimezone(date, 'Australia/Sydney', 'iso')).toBe('2026-03-01T23:30:45+11:00');
   });
 
-  it('formats with MM/DD/YYYY date format', () => {
-    const date = new Date('2026-03-01T12:30:45.000Z');
-    const opts: FormatOptions = { hour12: false, dateFormat: 'MM/DD/YYYY' };
-    const result = formatTimezone(date, 'Australia/Sydney', opts);
-    expect(result).toBe('03/01/2026 23:30:45 AEDT');
+  it('formats Sydney as RFC 2822', () => {
+    expect(formatTimezone(date, 'Australia/Sydney', 'rfc2822')).toBe('Sun, 01 Mar 2026 23:30:45 +1100');
   });
 });
 
 describe('getTimezoneOffset', () => {
   it('returns offset string for a timezone', () => {
     const date = new Date('2026-03-01T12:30:45.000Z');
-    const result = getTimezoneOffset(date, 'Australia/Sydney');
-    expect(result).toBe('+11:00');
+    expect(getTimezoneOffset(date, 'Australia/Sydney')).toBe('+11:00');
   });
 });
 

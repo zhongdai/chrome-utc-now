@@ -1,62 +1,55 @@
-export interface FormatOptions {
-  hour12: boolean;
-  dateFormat: 'YYYY-MM-DD' | 'DD/MM/YYYY' | 'MM/DD/YYYY';
-}
+export type TimeFormat = 'iso' | 'iso-short' | 'rfc2822';
 
-export const DEFAULT_FORMAT_OPTIONS: FormatOptions = {
-  hour12: false,
-  dateFormat: 'YYYY-MM-DD',
-};
+export const DEFAULT_FORMAT: TimeFormat = 'iso-short';
 
 function padTwo(n: number): string {
   return n.toString().padStart(2, '0');
 }
 
-function orderDateParts(
-  year: string,
-  month: string,
-  day: string,
-  dateFormat: FormatOptions['dateFormat'],
-): string {
-  switch (dateFormat) {
-    case 'DD/MM/YYYY':
-      return `${day}/${month}/${year}`;
-    case 'MM/DD/YYYY':
-      return `${month}/${day}/${year}`;
-    default:
-      return `${year}-${month}-${day}`;
-  }
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatUtcIso(date: Date): string {
+  return date.toISOString().replace(/\.\d{3}Z$/, 'Z');
 }
 
-function formatHour12(hours: number, minutes: string, seconds: string): string {
-  const period = hours >= 12 ? 'PM' : 'AM';
-  const h = hours % 12 || 12;
-  return `${h}:${minutes}:${seconds} ${period}`;
-}
-
-export function formatUtcTime(date: Date, options: FormatOptions = DEFAULT_FORMAT_OPTIONS): string {
-  const y = date.getUTCFullYear().toString();
+function formatUtcIsoShort(date: Date): string {
+  const y = date.getUTCFullYear();
   const m = padTwo(date.getUTCMonth() + 1);
   const d = padTwo(date.getUTCDate());
-  const h = date.getUTCHours();
+  const h = padTwo(date.getUTCHours());
   const min = padTwo(date.getUTCMinutes());
   const s = padTwo(date.getUTCSeconds());
+  return `${y}-${m}-${d} ${h}:${min}:${s} UTC`;
+}
 
-  const datePart = orderDateParts(y, m, d, options.dateFormat);
-  const timePart = options.hour12 ? formatHour12(h, min, s) : `${padTwo(h)}:${min}:${s}`;
+function formatUtcRfc2822(date: Date): string {
+  const day = DAY_NAMES[date.getUTCDay()];
+  const d = padTwo(date.getUTCDate());
+  const mon = MONTH_NAMES[date.getUTCMonth()];
+  const y = date.getUTCFullYear();
+  const h = padTwo(date.getUTCHours());
+  const min = padTwo(date.getUTCMinutes());
+  const s = padTwo(date.getUTCSeconds());
+  return `${day}, ${d} ${mon} ${y} ${h}:${min}:${s} GMT`;
+}
 
-  return `${datePart} ${timePart} UTC`;
+export function formatUtcTime(date: Date, format: TimeFormat = DEFAULT_FORMAT): string {
+  switch (format) {
+    case 'iso':
+      return formatUtcIso(date);
+    case 'rfc2822':
+      return formatUtcRfc2822(date);
+    default:
+      return formatUtcIsoShort(date);
+  }
 }
 
 export function formatUnixEpoch(date: Date): string {
   return Math.floor(date.getTime() / 1000).toString();
 }
 
-function formatWithIntl(
-  date: Date,
-  timezone: string | undefined,
-  options: FormatOptions,
-): string {
+function getIntlParts(date: Date, timezone: string | undefined): Record<string, string> {
   const formatter = new Intl.DateTimeFormat('en-AU', {
     timeZone: timezone,
     year: 'numeric',
@@ -65,43 +58,80 @@ function formatWithIntl(
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-    hour12: options.hour12,
+    hour12: false,
+    weekday: 'short',
     timeZoneName: 'short',
   });
 
   const parts = formatter.formatToParts(date);
   const get = (type: string): string => parts.find((p) => p.type === type)?.value ?? '';
 
-  const year = get('year');
-  const month = get('month');
-  const day = get('day');
-  const hour = get('hour');
-  const minute = get('minute');
-  const second = get('second');
-  const dayPeriod = get('dayPeriod');
-  const tzName = get('timeZoneName');
+  return {
+    year: get('year'),
+    month: get('month'),
+    day: get('day'),
+    hour: get('hour'),
+    minute: get('minute'),
+    second: get('second'),
+    weekday: get('weekday'),
+    tzName: get('timeZoneName'),
+  };
+}
 
-  const datePart = orderDateParts(year, month, day, options.dateFormat);
-  const timePart = options.hour12
-    ? `${hour}:${minute}:${second} ${dayPeriod}`
-    : `${hour}:${minute}:${second}`;
+function getOffsetString(date: Date, timezone: string | undefined): string {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    timeZoneName: 'longOffset',
+  });
+  const parts = formatter.formatToParts(date);
+  return parts.find((p) => p.type === 'timeZoneName')?.value ?? 'GMT';
+}
 
-  return `${datePart} ${timePart} ${tzName}`;
+function formatLocalIso(date: Date, timezone: string | undefined): string {
+  const p = getIntlParts(date, timezone);
+  const offset = getOffsetString(date, timezone).replace('GMT', '');
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}${offset || 'Z'}`;
+}
+
+function formatLocalIsoShort(date: Date, timezone: string | undefined): string {
+  const p = getIntlParts(date, timezone);
+  return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}:${p.second} ${p.tzName}`;
+}
+
+function formatLocalRfc2822(date: Date, timezone: string | undefined): string {
+  const p = getIntlParts(date, timezone);
+  const offset = getOffsetString(date, timezone).replace('GMT', '').replace(':', '');
+  return `${p.weekday}, ${p.day} ${MONTH_NAMES[parseInt(p.month, 10) - 1]} ${p.year} ${p.hour}:${p.minute}:${p.second} ${offset || '+0000'}`;
+}
+
+function formatWithFormat(
+  date: Date,
+  timezone: string | undefined,
+  format: TimeFormat,
+): string {
+  switch (format) {
+    case 'iso':
+      return formatLocalIso(date, timezone);
+    case 'rfc2822':
+      return formatLocalRfc2822(date, timezone);
+    default:
+      return formatLocalIsoShort(date, timezone);
+  }
 }
 
 export function formatTimezone(
   date: Date,
   timezone: string,
-  options: FormatOptions = DEFAULT_FORMAT_OPTIONS,
+  format: TimeFormat = DEFAULT_FORMAT,
 ): string {
-  return formatWithIntl(date, timezone, options);
+  return formatWithFormat(date, timezone, format);
 }
 
 export function formatLocalTime(
   date: Date,
-  options: FormatOptions = DEFAULT_FORMAT_OPTIONS,
+  format: TimeFormat = DEFAULT_FORMAT,
 ): string {
-  return formatWithIntl(date, undefined, options);
+  return formatWithFormat(date, undefined, format);
 }
 
 export function formatRelativeTime(date: Date, now: Date = new Date()): string {
