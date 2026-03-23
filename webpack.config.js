@@ -29,6 +29,7 @@ module.exports = {
         { from: 'src/manifest.json', to: 'manifest.json' },
         { from: 'src/popup.html', to: 'popup.html' },
         { from: 'src/db-reference.html', to: 'db-reference.html' },
+        { from: 'src/db-reference.js', to: 'db-reference.js' },
         { from: 'src/popup.css', to: 'popup.css' },
         { from: 'src/icons/*.png', to: 'icons/[name][ext]' },
       ],
