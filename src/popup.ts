@@ -171,6 +171,14 @@ function init(): void {
     epochInput.addEventListener('input', handleEpochInput);
   }
 
+  // DB reference button
+  const refToggle = document.getElementById('ref-toggle');
+  if (refToggle) {
+    refToggle.addEventListener('click', () => {
+      chrome.tabs.create({ url: chrome.runtime.getURL('db-reference.html') });
+    });
+  }
+
   // Settings panel toggle
   const settingsToggle = document.getElementById('settings-toggle');
   const settingsPanel = document.getElementById('settings-panel');

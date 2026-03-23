@@ -20,6 +20,7 @@ A minimal Chrome extension that shows the current UTC time and Unix epoch at a g
 - **Unix epoch** — click to copy to clipboard instantly
 - **Second timezone** — configurable dropdown (default: Sydney). Click to copy. Day/night indicator. Handy for distributed teams
 - **Epoch converter** — paste any Unix timestamp (seconds) to see it as UTC and local time with relative time (e.g. "3h 30m ago"), click either result to copy
+- **DB date/time reference** — quick-reference table of common date/time operations across PostgreSQL, MySQL, SQLite, SQL Server, and Oracle. Click any snippet to copy
 - **Settings panel** — click the gear icon to configure:
   - **Dark / Light theme** — switch between dark and light mode
   - **Time format** — ISO Short (`2026-03-22 11:30:45 UTC`), ISO 8601 (`2026-03-22T11:30:45Z`), or RFC 2822 (`Sun, 22 Mar 2026 11:30:45 GMT`)

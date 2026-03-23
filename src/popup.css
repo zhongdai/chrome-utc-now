@@ -58,9 +58,14 @@ h1 {
   text-transform: uppercase;
 }
 
-.settings-toggle {
+.header-buttons {
   position: absolute;
   right: 0;
+  display: flex;
+  gap: 4px;
+}
+
+.header-btn {
   background: none;
   border: none;
   color: var(--text-muted);
@@ -71,7 +76,7 @@ h1 {
   transition: color 0.2s;
 }
 
-.settings-toggle:hover {
+.header-btn:hover {
   color: var(--accent);
 }
 

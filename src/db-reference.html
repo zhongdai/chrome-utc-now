@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DB Date/Time Reference — UTC/Unix Clock</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      padding: 32px;
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 500;
+      color: #a0a0c0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #7a7aaa;
+      margin-bottom: 24px;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid #3a3a5e;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 900px;
+    }
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid #3a3a5e;
+      vertical-align: top;
+    }
+    th {
+      background: #16213e;
+      color: #a0a0c0;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: #16213e;
+      min-width: 160px;
+      font-weight: 500;
+      color: #4fc3f7;
+      font-size: 13px;
+    }
+    th:first-child {
+      z-index: 3;
+    }
+    tr:hover td {
+      background: #1e2a4a;
+    }
+    tr:hover td:first-child {
+      background: #1e2a4a;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: #1a1a2e;
+      padding: 2px 5px;
+      border-radius: 3px;
+      color: #e0e0e0;
+      white-space: nowrap;
+    }
+    td {
+      font-size: 13px;
+      color: #c0c0d0;
+    }
+    .note {
+      font-size: 11px;
+      color: #7a7aaa;
+      display: block;
+      margin-top: 3px;
+    }
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #7a7aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>DB Date/Time Reference</h1>
+  <p class="subtitle">Common date and time operations across databases — from the UTC/Unix Clock extension</p>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>PostgreSQL</th>
+          <th>MySQL</th>
+          <th>SQLite</th>
+          <th>SQL Server</th>
+          <th>Oracle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Current timestamp</td>
+          <td><code>NOW()</code><span class="note">or <code>CURRENT_TIMESTAMP</code></span></td>
+          <td><code>NOW()</code><span class="note">or <code>CURRENT_TIMESTAMP</code></span></td>
+          <td><code>datetime('now')</code></td>
+          <td><code>GETDATE()</code><span class="note">or <code>CURRENT_TIMESTAMP</code></span></td>
+          <td><code>SYSDATE</code><span class="note">or <code>SYSTIMESTAMP</code></span></td>
+        </tr>
+        <tr>
+          <td>Current UTC</td>
+          <td><code>NOW() AT TIME ZONE 'UTC'</code></td>
+          <td><code>UTC_TIMESTAMP()</code></td>
+          <td><code>datetime('now','utc')</code></td>
+          <td><code>GETUTCDATE()</code></td>
+          <td><code>SYS_EXTRACT_UTC(SYSTIMESTAMP)</code></td>
+        </tr>
+        <tr>
+          <td>Epoch → datetime</td>
+          <td><code>TO_TIMESTAMP(1774391445)</code></td>
+          <td><code>FROM_UNIXTIME(1774391445)</code></td>
+          <td><code>datetime(1774391445, 'unixepoch')</code></td>
+          <td><code>DATEADD(s, 1774391445, '1970-01-01')</code></td>
+          <td><code>TO_DATE('1970-01-01','YYYY-MM-DD') + NUMTODSINTERVAL(1774391445,'SECOND')</code></td>
+        </tr>
+        <tr>
+          <td>Datetime → epoch</td>
+          <td><code>EXTRACT(EPOCH FROM NOW())</code></td>
+          <td><code>UNIX_TIMESTAMP(NOW())</code></td>
+          <td><code>strftime('%s','now')</code></td>
+          <td><code>DATEDIFF(s, '1970-01-01', GETDATE())</code></td>
+          <td><code>(SYSDATE - TO_DATE('1970-01-01','YYYY-MM-DD')) * 86400</code></td>
+        </tr>
+        <tr>
+          <td>Add 3 days</td>
+          <td><code>NOW() + INTERVAL '3 days'</code></td>
+          <td><code>DATE_ADD(NOW(), INTERVAL 3 DAY)</code></td>
+          <td><code>datetime('now', '+3 days')</code></td>
+          <td><code>DATEADD(day, 3, GETDATE())</code></td>
+          <td><code>SYSDATE + INTERVAL '3' DAY</code></td>
+        </tr>
+        <tr>
+          <td>Subtract 3 days</td>
+          <td><code>NOW() - INTERVAL '3 days'</code></td>
+          <td><code>DATE_SUB(NOW(), INTERVAL 3 DAY)</code></td>
+          <td><code>datetime('now', '-3 days')</code></td>
+          <td><code>DATEADD(day, -3, GETDATE())</code></td>
+          <td><code>SYSDATE - INTERVAL '3' DAY</code></td>
+        </tr>
+        <tr>
+          <td>Add 2 hours</td>
+          <td><code>NOW() + INTERVAL '2 hours'</code></td>
+          <td><code>DATE_ADD(NOW(), INTERVAL 2 HOUR)</code></td>
+          <td><code>datetime('now', '+2 hours')</code></td>
+          <td><code>DATEADD(hour, 2, GETDATE())</code></td>
+          <td><code>SYSDATE + INTERVAL '2' HOUR</code></td>
+        </tr>
+        <tr>
+          <td>Diff between dates</td>
+          <td><code>AGE(d1, d2)</code><span class="note">or <code>d1 - d2</code> for interval</span></td>
+          <td><code>DATEDIFF(d1, d2)</code><span class="note">returns days</span></td>
+          <td><code>julianday(d1) - julianday(d2)</code><span class="note">returns days</span></td>
+          <td><code>DATEDIFF(day, d1, d2)</code></td>
+          <td><code>d1 - d2</code><span class="note">returns days</span></td>
+        </tr>
+        <tr>
+          <td>Truncate to day</td>
+          <td><code>DATE_TRUNC('day', NOW())</code></td>
+          <td><code>DATE(NOW())</code></td>
+          <td><code>date('now')</code></td>
+          <td><code>CAST(GETDATE() AS DATE)</code></td>
+          <td><code>TRUNC(SYSDATE)</code></td>
+        </tr>
+        <tr>
+          <td>Truncate to month</td>
+          <td><code>DATE_TRUNC('month', NOW())</code></td>
+          <td><code>DATE_FORMAT(NOW(), '%Y-%m-01')</code></td>
+          <td><code>date('now', 'start of month')</code></td>
+          <td><code>DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)</code></td>
+          <td><code>TRUNC(SYSDATE, 'MM')</code></td>
+        </tr>
+        <tr>
+          <td>Format as YYYY-MM-DD</td>
+          <td><code>TO_CHAR(NOW(), 'YYYY-MM-DD')</code></td>
+          <td><code>DATE_FORMAT(NOW(), '%Y-%m-%d')</code></td>
+          <td><code>strftime('%Y-%m-%d', 'now')</code></td>
+          <td><code>FORMAT(GETDATE(), 'yyyy-MM-dd')</code></td>
+          <td><code>TO_CHAR(SYSDATE, 'YYYY-MM-DD')</code></td>
+        </tr>
+        <tr>
+          <td>Extract year</td>
+          <td><code>EXTRACT(YEAR FROM NOW())</code></td>
+          <td><code>YEAR(NOW())</code></td>
+          <td><code>strftime('%Y', 'now')</code></td>
+          <td><code>YEAR(GETDATE())</code></td>
+          <td><code>EXTRACT(YEAR FROM SYSDATE)</code></td>
+        </tr>
+        <tr>
+          <td>Extract hour</td>
+          <td><code>EXTRACT(HOUR FROM NOW())</code></td>
+          <td><code>HOUR(NOW())</code></td>
+          <td><code>strftime('%H', 'now')</code></td>
+          <td><code>DATEPART(hour, GETDATE())</code></td>
+          <td><code>EXTRACT(HOUR FROM SYSTIMESTAMP)</code></td>
+        </tr>
+        <tr>
+          <td>Cast string to date</td>
+          <td><code>TO_DATE('2026-03-22', 'YYYY-MM-DD')</code></td>
+          <td><code>STR_TO_DATE('2026-03-22', '%Y-%m-%d')</code></td>
+          <td><code>date('2026-03-22')</code></td>
+          <td><code>CONVERT(DATE, '2026-03-22')</code></td>
+          <td><code>TO_DATE('2026-03-22', 'YYYY-MM-DD')</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="footer">Tip: Click any code snippet to copy it to your clipboard.</p>
+
+  <script>
+    document.querySelectorAll('code').forEach(function(el) {
+      el.style.cursor = 'pointer';
+      el.title = 'Click to copy';
+      el.addEventListener('click', function() {
+        navigator.clipboard.writeText(el.textContent);
+        var orig = el.style.color;
+        el.style.color = '#4caf50';
+        setTimeout(function() { el.style.color = orig; }, 800);
+      });
+    });
+  </script>
+</body>
+</html>
