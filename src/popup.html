@@ -47,6 +47,7 @@
         <div id="local-time" class="time-value" title="Click to copy"></div>
         <span class="copy-feedback">Copied!</span>
       </div>
+      <label>EPOCH</label>
       <div class="epoch-row">
         <span id="unix-epoch" class="epoch-value" title="Click to copy"></span>
         <span id="copy-feedback" class="copy-feedback">Copied!</span>
@@ -68,15 +69,15 @@
       <label>EPOCH CONVERTER</label>
       <input id="epoch-input" type="text" placeholder="Enter unix timestamp..." />
       <div id="convert-results" class="convert-results" style="display:none">
-        <div class="convert-row">
-          <span class="convert-label">UTC</span>
-          <span id="convert-utc" class="convert-value" title="Click to copy"></span>
-          <span class="copy-feedback" data-for="convert-utc">Copied!</span>
+        <label>UTC</label>
+        <div class="copyable-row">
+          <div id="convert-utc" class="time-value" title="Click to copy"></div>
+          <span class="copy-feedback">Copied!</span>
         </div>
-        <div class="convert-row">
-          <span class="convert-label">Local</span>
-          <span id="convert-local" class="convert-value" title="Click to copy"></span>
-          <span class="copy-feedback" data-for="convert-local">Copied!</span>
+        <label>LOCAL</label>
+        <div class="copyable-row">
+          <div id="convert-local" class="time-value" title="Click to copy"></div>
+          <span class="copy-feedback">Copied!</span>
         </div>
       </div>
     </section>

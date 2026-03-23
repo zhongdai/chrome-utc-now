@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "UTC/Unix Clock",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Shows current UTC time and Unix epoch with a configurable second timezone.",
   "permissions": [],
   "action": {

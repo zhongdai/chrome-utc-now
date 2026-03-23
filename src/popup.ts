@@ -139,14 +139,6 @@ function init(): void {
     epochInput.addEventListener('input', handleEpochInput);
   }
 
-  // Convert value click-to-copy
-  document.querySelectorAll('.convert-value').forEach((el) => {
-    el.addEventListener('click', () => {
-      const feedback = el.nextElementSibling as HTMLElement | null;
-      copyAndFeedback(el as HTMLElement, feedback);
-    });
-  });
-
   // Settings panel toggle
   const settingsToggle = document.getElementById('settings-toggle');
   const settingsPanel = document.getElementById('settings-panel');

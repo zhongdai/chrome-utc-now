@@ -128,7 +128,9 @@ h1 {
 
 #utc-time,
 #local-time,
-#tz-time {
+#tz-time,
+#convert-utc,
+#convert-local {
   font-size: 16px;
   white-space: nowrap;
 }
@@ -251,7 +253,7 @@ h1 {
 }
 
 .version {
-  text-align: center;
+  text-align: left;
   font-size: 10px;
   color: var(--text-muted);
   margin-top: 4px;
