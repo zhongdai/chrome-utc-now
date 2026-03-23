@@ -26,7 +26,11 @@ build:
 
 # Build and package as zip
 package: build
-    cd dist && zip -r ../extension.zip .
+    #!/usr/bin/env bash
+    set -euo pipefail
+    name=$(node -p "require('./package.json').name")
+    version=$(node -p "require('./package.json').version")
+    cd dist && zip -r "../${name}-${version}.zip" .
 
 # Lint + test + build (full CI check)
 check: lint test build
@@ -64,4 +68,4 @@ patch:
 
 # Clean build artifacts
 clean:
-    rm -rf dist extension.zip
+    rm -rf dist *.zip

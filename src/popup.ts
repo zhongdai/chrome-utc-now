@@ -21,23 +21,19 @@ import {
 } from './settings';
 
 let currentTimezone = 'Australia/Sydney';
-let showUtc = true;
 let formatOptions: FormatOptions = { hour12: false, dateFormat: 'YYYY-MM-DD' };
 
 function updateDisplay(): void {
   const now = new Date();
 
   const utcEl = document.getElementById('utc-time');
-  const utcLabel = document.getElementById('utc-label');
+  const localEl = document.getElementById('local-time');
   const epochEl = document.getElementById('unix-epoch');
   const tzTimeEl = document.getElementById('tz-time');
   const tzOffsetEl = document.getElementById('tz-offset');
 
-  if (utcEl)
-    utcEl.textContent = showUtc
-      ? formatUtcTime(now, formatOptions)
-      : formatLocalTime(now, formatOptions);
-  if (utcLabel) utcLabel.textContent = showUtc ? 'UTC' : 'LOCAL';
+  if (utcEl) utcEl.textContent = formatUtcTime(now, formatOptions);
+  if (localEl) localEl.textContent = formatLocalTime(now, formatOptions);
   if (epochEl) epochEl.textContent = formatUnixEpoch(now);
   if (tzTimeEl) tzTimeEl.textContent = formatTimezone(now, currentTimezone, formatOptions);
   if (tzOffsetEl) tzOffsetEl.textContent = `UTC${getTimezoneOffset(now, currentTimezone)}`;
@@ -129,14 +125,13 @@ function init(): void {
     epochEl.addEventListener('click', handleEpochClick);
   }
 
-  // UTC/Local toggle
-  const utcEl = document.getElementById('utc-time');
-  if (utcEl) {
-    utcEl.addEventListener('click', () => {
-      showUtc = !showUtc;
-      updateDisplay();
+  // Click-to-copy on time values
+  document.querySelectorAll('.copyable-row .time-value').forEach((el) => {
+    el.addEventListener('click', () => {
+      const feedback = el.nextElementSibling as HTMLElement | null;
+      copyAndFeedback(el as HTMLElement, feedback);
     });
-  }
+  });
 
   // Epoch converter input
   const epochInput = document.getElementById('epoch-input');
@@ -194,6 +189,13 @@ function init(): void {
       formatOptions = { ...formatOptions, dateFormat: newDateFormat };
       updateDisplay();
     });
+  }
+
+  // Version footer
+  const versionEl = document.getElementById('version');
+  if (versionEl) {
+    const version = chrome.runtime.getManifest().version;
+    versionEl.textContent = `v${version}`;
   }
 
   updateDisplay();

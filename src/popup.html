@@ -37,8 +37,16 @@
     </div>
 
     <section class="time-block">
-      <label id="utc-label">UTC</label>
-      <div id="utc-time" class="time-value"></div>
+      <label>UTC</label>
+      <div class="copyable-row">
+        <div id="utc-time" class="time-value" title="Click to copy"></div>
+        <span class="copy-feedback">Copied!</span>
+      </div>
+      <label>LOCAL</label>
+      <div class="copyable-row">
+        <div id="local-time" class="time-value" title="Click to copy"></div>
+        <span class="copy-feedback">Copied!</span>
+      </div>
       <div class="epoch-row">
         <span id="unix-epoch" class="epoch-value" title="Click to copy"></span>
         <span id="copy-feedback" class="copy-feedback">Copied!</span>
@@ -49,7 +57,10 @@
       <div class="tz-header">
         <select id="tz-select"></select>
       </div>
-      <div id="tz-time" class="time-value"></div>
+      <div class="copyable-row">
+        <div id="tz-time" class="time-value" title="Click to copy"></div>
+        <span class="copy-feedback">Copied!</span>
+      </div>
       <div id="tz-offset" class="offset-value"></div>
     </section>
 
@@ -69,6 +80,7 @@
         </div>
       </div>
     </section>
+    <footer id="version" class="version"></footer>
   </div>
   <script src="popup.js"></script>
 </body>

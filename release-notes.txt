@@ -1,0 +1,19 @@
+A minimal Chrome extension that shows the current UTC time and Unix epoch at a glance. Includes a configurable second timezone and a built-in epoch converter.
+
+**Why?**
+
+Database timestamps are Unix epochs. When debugging production data or querying databases that store timestamps as integers, you need the current epoch right now — not after googling "unix timestamp converter" for the hundredth time.
+
+Incident reports need both UTC and local time. Writing a post-mortem at 2am and need to reference "the alert fired at 14:32 UTC (01:32 AEDT)"? This extension shows both side by side, updating live.
+
+Got a timestamp from a log? Paste it into the epoch converter to instantly see the UTC and local time — no need to leave the browser.
+
+**Features**
+
+• Live UTC + Local clock — updates every second, click either to copy
+• Unix epoch — click to copy to clipboard instantly
+• Second timezone — configurable dropdown (default: Sydney), click to copy
+• Epoch converter — paste any Unix timestamp to see UTC and local time, click to copy
+• Settings panel — dark/light theme, 12h/24h time, date format (YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY)
+• All preferences persist across sessions
+• Minimal permissions — no data collection, no network requests

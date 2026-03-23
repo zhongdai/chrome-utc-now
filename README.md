@@ -14,10 +14,9 @@ A minimal Chrome extension that shows the current UTC time and Unix epoch at a g
 
 ## Features
 
-- **Live UTC clock** — current date and time in UTC, updates every second
+- **Live UTC + Local clock** — current date and time in both UTC and local, updates every second. Click either to copy
 - **Unix epoch** — click to copy to clipboard instantly
-- **UTC / Local toggle** — click the time to switch between UTC and local display
-- **Second timezone** — configurable dropdown (default: Sydney). Handy for distributed teams
+- **Second timezone** — configurable dropdown (default: Sydney). Click to copy. Handy for distributed teams
 - **Epoch converter** — paste any Unix timestamp (seconds) to see it as UTC and local time, click either result to copy
 - **Settings panel** — click the gear icon to configure:
   - **Dark / Light theme** — switch between dark and light mode
@@ -30,7 +29,7 @@ A minimal Chrome extension that shows the current UTC time and Unix epoch at a g
 ### From GitHub Releases
 
 1. Go to the [latest release](https://github.com/zhongdai/chrome-utc-now/releases/latest)
-2. Download `extension.zip`
+2. Download the `.zip` file
 3. Unzip to a folder
 4. Open `chrome://extensions`, enable **Developer Mode**
 5. Click **Load unpacked** → select the unzipped folder
@@ -69,7 +68,7 @@ npx jest src/time.test.ts --verbose
 ## CI/CD
 
 - **CI** (`.github/workflows/ci.yml`): lint + test + build on every push/PR to `main`
-- **Release** (`.github/workflows/publish.yml`): on push to `main`, auto-tags from `package.json` version and creates a GitHub Release with `extension.zip` attached
+- **Release** (`.github/workflows/publish.yml`): on push to `main`, auto-tags from `package.json` version and creates a GitHub Release with the packaged zip attached
 
 To publish a new release, bump the version in both `package.json` and `src/manifest.json`, then push to `main`.
 
