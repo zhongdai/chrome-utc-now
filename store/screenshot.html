@@ -60,9 +60,11 @@
     }
     .time-value {
       font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-      font-size: 20px;
+      font-size: 18px;
       color: #ffffff;
-      margin: 6px 0;
+      margin: 4px 0;
+      padding: 2px 6px;
+      border-radius: 4px;
       white-space: nowrap;
     }
     .epoch-row {
@@ -74,12 +76,10 @@
       font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
       font-size: 16px;
       color: #4fc3f7;
-      background: #1a3a5c;
       padding: 3px 8px;
       border-radius: 4px;
-      cursor: pointer;
     }
-    .copy-label {
+    .copy-hint {
       font-size: 12px;
       color: #4caf50;
     }
@@ -107,22 +107,12 @@
     .convert-results {
       margin-top: 10px;
     }
-    .convert-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 5px;
-    }
-    .convert-label {
-      font-size: 12px;
+    .version {
+      text-align: left;
+      font-size: 10px;
       color: #7a7aaa;
-      min-width: 40px;
-    }
-    .convert-value {
-      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-      font-size: 15px;
-      color: #4fc3f7;
-      cursor: pointer;
+      margin-top: 6px;
+      opacity: 0.6;
     }
     .features {
       display: flex;
@@ -155,33 +145,34 @@
 
     <div class="time-block">
       <label>UTC</label>
-      <div class="time-value">2026-03-01 12:30:45 UTC</div>
+      <div class="time-value">2026-03-22 11:30:45 UTC</div>
+      <label>LOCAL</label>
+      <div class="time-value">2026-03-22 22:30:45 AEDT</div>
+      <label>EPOCH</label>
       <div class="epoch-row">
-        <span class="epoch-value">1772368245</span>
-        <span class="copy-label">click to copy</span>
+        <span class="epoch-value">1774391445</span>
+        <span class="copy-hint">click to copy</span>
       </div>
     </div>
 
     <div class="time-block">
       <div class="tz-name">Australia/Sydney</div>
-      <div class="time-value">2026-03-01 23:30:45 AEDT</div>
+      <div class="time-value">2026-03-22 22:30:45 AEDT</div>
       <div class="offset">UTC+11:00</div>
     </div>
 
     <div class="time-block">
       <label>Epoch Converter</label>
-      <input class="converter-input" value="1772368245" readonly />
+      <input class="converter-input" value="1774391445" readonly />
       <div class="convert-results">
-        <div class="convert-row">
-          <span class="convert-label">UTC</span>
-          <span class="convert-value">2026-03-01 12:30:45 UTC</span>
-        </div>
-        <div class="convert-row">
-          <span class="convert-label">Local</span>
-          <span class="convert-value">2026-03-01 23:30:45 AEDT</span>
-        </div>
+        <label>UTC</label>
+        <div class="time-value">2026-03-22 11:30:45 UTC</div>
+        <label>LOCAL</label>
+        <div class="time-value">2026-03-22 22:30:45 AEDT</div>
       </div>
     </div>
+
+    <div class="version">v1.5.0</div>
   </div>
 
   <div class="features">
